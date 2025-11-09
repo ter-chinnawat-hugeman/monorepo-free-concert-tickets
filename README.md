@@ -184,5 +184,5 @@ consert-monorepo/
 
 ### Default Credentials
 
-- **Admin**: username: `admin`, password: `admin`
-- **User**: username: `user`, password: `user`
+- **Admin**: username: `admin`, password: `admin123`
+- **User**: username: `user`, password: `user123`

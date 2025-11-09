@@ -18,12 +18,12 @@ interface ConcertSeed {
 const usersToSeed: UserSeed[] = [
   {
     username: 'admin',
-    password: 'admin',
+    password: 'admin123',
     role: 'ADMIN',
   },
   {
     username: 'user',
-    password: 'user',
+    password: 'user123',
     role: 'USER',
   },
 ];
@@ -123,8 +123,8 @@ async function main() {
   console.log(`   - Users: ${seededUsers.length}`);
   console.log(`   - Concerts: ${seededConcerts.length}`);
   console.log('\n🔑 Default credentials:');
-  console.log('   Admin: username=admin, password=admin');
-  console.log('   User:  username=user,  password=user');
+  console.log('   Admin: username=admin, password=admin123');
+  console.log('   User:  username=user,  password=user123');
 }
 
 main()
