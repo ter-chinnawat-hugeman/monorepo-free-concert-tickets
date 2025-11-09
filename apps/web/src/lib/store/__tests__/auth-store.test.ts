@@ -1,28 +1,38 @@
-const mockGet = jest.fn()
-const mockPost = jest.fn()
-const mockDelete = jest.fn()
-
 jest.mock('axios', () => {
   const actualAxios = jest.requireActual('axios')
+  const mockGet = jest.fn()
+  const mockPost = jest.fn()
+  const mockDelete = jest.fn()
+  
+  const mockInstance = {
+    get: mockGet,
+    post: mockPost,
+    delete: mockDelete,
+    interceptors: {
+      request: {
+        use: jest.fn(),
+      },
+      response: {
+        use: jest.fn(),
+      },
+    },
+  }
+  
   return {
     ...actualAxios,
-    create: jest.fn(() => ({
-      get: mockGet,
-      post: mockPost,
-      delete: mockDelete,
-      interceptors: {
-        request: {
-          use: jest.fn(),
-        },
-        response: {
-          use: jest.fn(),
-        },
-      },
-    })),
+    create: jest.fn(() => mockInstance),
+    __mockGet: mockGet,
+    __mockPost: mockPost,
+    __mockDelete: mockDelete,
   }
 })
 
 import { concertApi, bookingApi } from '../../api'
+import axios from 'axios'
+
+const mockGet = (axios as any).__mockGet
+const mockPost = (axios as any).__mockPost
+const mockDelete = (axios as any).__mockDelete
 
 Object.defineProperty(window, 'localStorage', {
   value: {
@@ -36,7 +46,6 @@ Object.defineProperty(window, 'localStorage', {
 describe('API Client', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    ;(window.localStorage.getItem as jest.Mock).mockReturnValue('mock-token')
   })
 
   describe('concertApi', () => {

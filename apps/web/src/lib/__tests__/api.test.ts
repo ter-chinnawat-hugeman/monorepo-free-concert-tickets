@@ -1,55 +1,52 @@
-import { concertApi, bookingApi, getAuthHeaders, apiClient } from '../api'
-
-// Mock axios
 jest.mock('axios', () => {
   const actualAxios = jest.requireActual('axios')
+  const mockGet = jest.fn()
+  const mockPost = jest.fn()
+  const mockDelete = jest.fn()
+  
+  const mockInstance = {
+    get: mockGet,
+    post: mockPost,
+    delete: mockDelete,
+    interceptors: {
+      request: {
+        use: jest.fn(),
+      },
+      response: {
+        use: jest.fn(),
+      },
+    },
+  }
+  
   return {
     ...actualAxios,
-    create: jest.fn(() => ({
-      get: jest.fn(),
-      post: jest.fn(),
-      delete: jest.fn(),
-      interceptors: {
-        response: {
-          use: jest.fn(),
-        },
-      },
-    })),
+    create: jest.fn(() => mockInstance),
+    __mockGet: mockGet,
+    __mockPost: mockPost,
+    __mockDelete: mockDelete,
   }
 })
+
+import { concertApi, bookingApi, apiClient } from '../api'
+import axios from 'axios'
+
+const mockGet = (axios as any).__mockGet
+const mockPost = (axios as any).__mockPost
+const mockDelete = (axios as any).__mockDelete
 
 describe('API Client', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  describe('getAuthHeaders', () => {
-    it('should return default headers for user', () => {
-      const headers = getAuthHeaders()
-      expect(headers).toEqual({
-        'x-user-id': 'user-001',
-        'x-user-role': 'USER',
-      })
-    })
-
-    it('should return custom headers', () => {
-      const headers = getAuthHeaders('admin-001', 'ADMIN')
-      expect(headers).toEqual({
-        'x-user-id': 'admin-001',
-        'x-user-role': 'ADMIN',
-      })
-    })
-  })
 
   describe('concertApi', () => {
     beforeEach(() => {
-      ;(apiClient.get as jest.Mock) = jest.fn()
-      ;(apiClient.post as jest.Mock) = jest.fn()
-      ;(apiClient.delete as jest.Mock) = jest.fn()
+      jest.clearAllMocks()
     })
 
     describe('getAll', () => {
-      it('should fetch all concerts without auth headers when no userId provided', async () => {
+      it('should fetch all concerts', async () => {
         const concerts = [
           {
             id: 'concert-1',
@@ -60,37 +57,11 @@ describe('API Client', () => {
           },
         ]
 
-        ;(apiClient.get as jest.Mock).mockResolvedValue({ data: concerts })
+        mockGet.mockResolvedValue({ data: concerts })
 
         const result = await concertApi.getAll()
 
-        expect(apiClient.get).toHaveBeenCalledWith('/concerts', {
-          headers: {},
-        })
-        expect(result).toEqual(concerts)
-      })
-
-      it('should fetch concerts with auth headers when userId provided', async () => {
-        const concerts = [
-          {
-            id: 'concert-1',
-            name: 'Concert 1',
-            description: 'Description',
-            totalSeats: 100,
-            reservedSeats: 50,
-          },
-        ]
-
-        ;(apiClient.get as jest.Mock).mockResolvedValue({ data: concerts })
-
-        const result = await concertApi.getAll('user-001', 'USER')
-
-        expect(apiClient.get).toHaveBeenCalledWith('/concerts', {
-          headers: {
-            'x-user-id': 'user-001',
-            'x-user-role': 'USER',
-          },
-        })
+        expect(mockGet).toHaveBeenCalledWith('/concerts')
         expect(result).toEqual(concerts)
       })
     })
@@ -105,17 +76,17 @@ describe('API Client', () => {
           reservedSeats: 50,
         }
 
-        ;(apiClient.get as jest.Mock).mockResolvedValue({ data: concert })
+        mockGet.mockResolvedValue({ data: concert })
 
         const result = await concertApi.getById('concert-1')
 
-        expect(apiClient.get).toHaveBeenCalledWith('/concerts/concert-1')
+        expect(mockGet).toHaveBeenCalledWith('/concerts/concert-1')
         expect(result).toEqual(concert)
       })
     })
 
     describe('create', () => {
-      it('should create a concert with admin headers', async () => {
+      it('should create a concert', async () => {
         const concertDto = {
           name: 'New Concert',
           description: 'Description',
@@ -128,36 +99,22 @@ describe('API Client', () => {
           reservedSeats: 0,
         }
 
-        ;(apiClient.post as jest.Mock).mockResolvedValue({ data: createdConcert })
+        mockPost.mockResolvedValue({ data: createdConcert })
 
         const result = await concertApi.create(concertDto)
 
-        expect(apiClient.post).toHaveBeenCalledWith(
-          '/concerts',
-          concertDto,
-          {
-            headers: {
-              'x-user-id': 'admin-001',
-              'x-user-role': 'ADMIN',
-            },
-          },
-        )
+        expect(mockPost).toHaveBeenCalledWith('/concerts', concertDto)
         expect(result).toEqual(createdConcert)
       })
     })
 
     describe('delete', () => {
-      it('should delete a concert with admin headers', async () => {
-        ;(apiClient.delete as jest.Mock).mockResolvedValue({ data: {} })
+      it('should delete a concert', async () => {
+        mockDelete.mockResolvedValue({ data: {} })
 
         await concertApi.delete('concert-1')
 
-        expect(apiClient.delete).toHaveBeenCalledWith('/concerts/concert-1', {
-          headers: {
-            'x-user-id': 'admin-001',
-            'x-user-role': 'ADMIN',
-          },
-        })
+        expect(mockDelete).toHaveBeenCalledWith('/concerts/concert-1')
       })
     })
 
@@ -171,20 +128,11 @@ describe('API Client', () => {
           createdAt: '2024-01-01',
         }
 
-        ;(apiClient.post as jest.Mock).mockResolvedValue({ data: booking })
+        mockPost.mockResolvedValue({ data: booking })
 
-        const result = await concertApi.reserve('concert-1', 'user-001')
+        const result = await concertApi.reserve('concert-1')
 
-        expect(apiClient.post).toHaveBeenCalledWith(
-          '/concerts/concert-1/reserve',
-          {},
-          {
-            headers: {
-              'x-user-id': 'user-001',
-              'x-user-role': 'USER',
-            },
-          },
-        )
+        expect(mockPost).toHaveBeenCalledWith('/concerts/concert-1/reserve', {})
         expect(result).toEqual(booking)
       })
     })
@@ -199,20 +147,11 @@ describe('API Client', () => {
           createdAt: '2024-01-01',
         }
 
-        ;(apiClient.post as jest.Mock).mockResolvedValue({ data: booking })
+        mockPost.mockResolvedValue({ data: booking })
 
-        const result = await concertApi.cancel('concert-1', 'user-001')
+        const result = await concertApi.cancel('concert-1')
 
-        expect(apiClient.post).toHaveBeenCalledWith(
-          '/concerts/concert-1/cancel',
-          {},
-          {
-            headers: {
-              'x-user-id': 'user-001',
-              'x-user-role': 'USER',
-            },
-          },
-        )
+        expect(mockPost).toHaveBeenCalledWith('/concerts/concert-1/cancel', {})
         expect(result).toEqual(booking)
       })
     })
@@ -220,7 +159,7 @@ describe('API Client', () => {
 
   describe('bookingApi', () => {
     beforeEach(() => {
-      ;(apiClient.get as jest.Mock) = jest.fn()
+      jest.clearAllMocks()
     })
 
     describe('getMyBookings', () => {
@@ -235,22 +174,17 @@ describe('API Client', () => {
           },
         ]
 
-        ;(apiClient.get as jest.Mock).mockResolvedValue({ data: bookings })
+        mockGet.mockResolvedValue({ data: bookings })
 
-        const result = await bookingApi.getMyBookings('user-001')
+        const result = await bookingApi.getMyBookings()
 
-        expect(apiClient.get).toHaveBeenCalledWith('/bookings/me', {
-          headers: {
-            'x-user-id': 'user-001',
-            'x-user-role': 'USER',
-          },
-        })
+        expect(mockGet).toHaveBeenCalledWith('/bookings/me')
         expect(result).toEqual(bookings)
       })
     })
 
     describe('getAllBookings', () => {
-      it('should fetch all bookings with admin headers', async () => {
+      it('should fetch all bookings', async () => {
         const bookings = [
           {
             id: 'booking-1',
@@ -261,16 +195,11 @@ describe('API Client', () => {
           },
         ]
 
-        ;(apiClient.get as jest.Mock).mockResolvedValue({ data: bookings })
+        mockGet.mockResolvedValue({ data: bookings })
 
         const result = await bookingApi.getAllBookings()
 
-        expect(apiClient.get).toHaveBeenCalledWith('/bookings', {
-          headers: {
-            'x-user-id': 'admin-001',
-            'x-user-role': 'ADMIN',
-          },
-        })
+        expect(mockGet).toHaveBeenCalledWith('/bookings')
         expect(result).toEqual(bookings)
       })
     })
