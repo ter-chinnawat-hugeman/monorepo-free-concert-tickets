@@ -32,14 +32,22 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Unauthorized - clear auth and redirect to login
-      if (typeof window !== 'undefined') {
+      // Don't redirect if the request was to login/register endpoints
+      // These endpoints return 401 for invalid credentials, which should be handled by the component
+      const requestUrl = error.config?.url || ''
+      const isAuthEndpoint = requestUrl.includes('/auth/login') || requestUrl.includes('/auth/register')
+      
+      if (!isAuthEndpoint && typeof window !== 'undefined') {
+        // Unauthorized for protected routes - clear auth and redirect to login
         localStorage.removeItem('token')
         // Use dynamic import to avoid circular dependency
         import('./store/auth-store').then(({ useAuthStore }) => {
           useAuthStore.getState().clearAuth()
         })
-        window.location.href = '/login'
+        // Only redirect if not already on login page
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login'
+        }
       }
     }
     // Return error as-is so components can access error.response.data

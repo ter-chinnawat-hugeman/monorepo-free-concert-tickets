@@ -33,7 +33,18 @@ export default function LoginPage() {
         router.push('/user')
       }
     } catch (error: any) {
-      toast.error(error.message || 'Login failed')
+      // Extract error message from axios error response
+      // NestJS returns errors in format: { statusCode, error, message, timestamp }
+      const errorMessage = error.response?.data?.message || error.message || 'Login failed. Please check your credentials and try again.'
+      
+      toast.error(errorMessage, {
+        duration: 4000,
+        icon: '⚠️',
+        style: {
+          background: '#fee2e2',
+          color: '#991b1b',
+        },
+      })
     } finally {
       setIsLoading(false)
     }

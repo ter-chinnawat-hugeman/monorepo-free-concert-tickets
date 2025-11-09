@@ -79,13 +79,13 @@ export class AuthService {
     // Find user by username
     const user = await this.userRepository.findByUsername(username);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Invalid username or password. Please check your credentials and try again.');
     }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Invalid username or password. Please check your credentials and try again.');
     }
 
     // Generate JWT token

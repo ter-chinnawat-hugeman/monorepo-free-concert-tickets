@@ -49,7 +49,12 @@ export default function RegisterPage() {
         router.push('/user')
       }
     } catch (error: any) {
-      toast.error(error.message || 'Registration failed')
+      // Extract error message from axios error response
+      const errorMessage = error.response?.data?.message || error.message || 'Registration failed. Please try again.'
+      toast.error(errorMessage, {
+        duration: 4000,
+        icon: '⚠️',
+      })
     } finally {
       setIsLoading(false)
     }
