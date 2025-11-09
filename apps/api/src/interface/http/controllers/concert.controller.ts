@@ -19,6 +19,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRole } from '../../../core/entities/user.entity';
 
 @Controller('concerts')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ConcertController {
   constructor(
     private readonly concertService: ConcertService,
@@ -26,6 +27,7 @@ export class ConcertController {
   ) {}
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.USER) 
   async findAll(@Req() req: any) {
     const concerts = await this.concertService.getAllConcerts();
     
@@ -64,6 +66,7 @@ export class ConcertController {
   }
 
   @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.USER) 
   async findOne(@Param('id') id: string) {
     const concert = await this.concertService.getConcertById(id);
     if (!concert) {
@@ -80,6 +83,7 @@ export class ConcertController {
   }
 
   @Post()
+  @Roles(UserRole.ADMIN) 
   @HttpCode(HttpStatus.CREATED)
   async create(
     @Body(new ZodValidationPipe(CreateConcertDtoSchema)) dto: CreateConcertDto,
@@ -95,12 +99,14 @@ export class ConcertController {
   }
 
   @Delete(':id')
+  @Roles(UserRole.ADMIN) 
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string) {
     await this.concertService.deleteConcert(id);
   }
 
   @Post(':id/reserve')
+  @Roles(UserRole.USER) 
   @HttpCode(HttpStatus.CREATED)
   async reserve(@Param('id') concertId: string, @Req() req: any) {
     const booking = await this.concertService.reserveSeat(concertId, req.user.id);
@@ -113,6 +119,7 @@ export class ConcertController {
   }
 
   @Post(':id/cancel')
+  @Roles(UserRole.USER)
   @HttpCode(HttpStatus.OK)
   async cancel(@Param('id') concertId: string, @Req() req: any) {
     const booking = await this.concertService.cancelReservation(concertId, req.user.id);
