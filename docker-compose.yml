@@ -65,6 +65,9 @@ services:
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      JWT_SECRET: ${JWT_SECRET:-top-secret}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
     ports:
       - "${API_PORT:-3001}:${API_PORT:-3001}"
     depends_on:
@@ -75,7 +78,27 @@ services:
     volumes:
       - ./apps/api:/app/apps/api
       - /app/node_modules
+    # Entrypoint script handles: prisma generate, migrate, seed, then start server
 
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: consert-web
+    env_file:
+      - .env
+      - apps/web/.env
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/api}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app/apps/web
+      - /app/node_modules
+      - /app/.next
 
 volumes:
   postgres_data:
