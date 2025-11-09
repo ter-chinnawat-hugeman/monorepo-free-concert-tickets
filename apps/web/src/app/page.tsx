@@ -23,9 +23,9 @@ export default function HomePage() {
   }, [user, router])
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
       <div className="text-center">
-        <p className="text-gray-500">Redirecting...</p>
+        <p className="text-gray-500 dark:text-gray-400">Redirecting...</p>
       </div>
     </div>
   )

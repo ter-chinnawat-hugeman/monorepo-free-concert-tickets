@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth-store'
+import { ThemeToggle } from './ThemeToggle'
 
 interface SidebarProps {
   currentPath: string
@@ -36,21 +37,24 @@ export function UserSidebar({ currentPath, isOpen, onClose }: SidebarProps) {
       
       {/* Sidebar */}
       <div
-        className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-800 min-h-screen flex flex-col transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
+        className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-800 dark:bg-gray-900 min-h-screen flex flex-col transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         <div className="p-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-white">User</h1>
-            <button
-              onClick={onClose}
-              className="md:hidden text-gray-300 hover:text-white"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <h1 className="text-2xl font-bold text-white dark:text-gray-100">User</h1>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <button
+                onClick={onClose}
+                className="md:hidden text-gray-300 hover:text-white"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
         <nav className="flex-1 px-4 space-y-2">
@@ -130,21 +134,24 @@ export function AdminSidebar({ currentPath, isOpen, onClose }: SidebarProps) {
       
       {/* Sidebar */}
       <div
-        className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-800 min-h-screen flex flex-col transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
+        className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-800 dark:bg-gray-900 min-h-screen flex flex-col transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         <div className="p-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-white">Admin</h1>
-            <button
-              onClick={onClose}
-              className="md:hidden text-gray-300 hover:text-white"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <h1 className="text-2xl font-bold text-white dark:text-gray-100">Admin</h1>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <button
+                onClick={onClose}
+                className="md:hidden text-gray-300 hover:text-white"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
         <nav className="flex-1 px-4 space-y-2">

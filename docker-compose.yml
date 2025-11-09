@@ -98,7 +98,6 @@ services:
     volumes:
       - ./apps/web:/app/apps/web
       - /app/node_modules
-      - /app/.next
 
 volumes:
   postgres_data:

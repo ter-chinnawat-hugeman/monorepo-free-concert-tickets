@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 import { UserSidebar } from '@/components/Sidebar'
 
 export default function UserPage() {
-  const { user, switchRole } = useAuthStore()
+  const { user } = useAuthStore()
   const queryClient = useQueryClient()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -52,39 +52,39 @@ export default function UserPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-700">
+    <div className="flex min-h-screen bg-gray-700 dark:bg-black">
       <UserSidebar currentPath="/user" isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <main className="flex-1 bg-white p-4 md:p-8">
+      <main className="flex-1 bg-white dark:bg-black p-4 md:p-8">
         {/* Mobile header with hamburger menu */}
         <div className="md:hidden mb-4 flex items-center gap-4">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="text-gray-700 hover:text-gray-900"
+            className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <h1 className="text-xl font-bold text-gray-900">User</h1>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">User</h1>
         </div>
 
         <div className="max-w-7xl mx-auto">
           {isLoading ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">Loading concerts...</p>
+              <p className="text-gray-500 dark:text-gray-400">Loading concerts...</p>
             </div>
           ) : concerts && concerts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {concerts.map((concert) => (
                 <div
                   key={concert.id}
-                  className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
+                  className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6 hover:shadow-lg transition-shadow"
                 >
-                  <h2 className="text-xl font-bold text-blue-600 mb-3">{concert.name}</h2>
+                  <h2 className="text-xl font-bold text-blue-600 dark:text-blue-400 mb-3">{concert.name}</h2>
                   {concert.description && (
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{concert.description}</p>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">{concert.description}</p>
                   )}
-                  <div className="flex items-center gap-2 text-gray-700 mb-4">
+                  <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-4">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
@@ -117,7 +117,7 @@ export default function UserPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500">No concerts available at this time.</p>
+              <p className="text-gray-500 dark:text-gray-400">No concerts available at this time.</p>
             </div>
           )}
         </div>

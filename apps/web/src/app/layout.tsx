@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import { useState } from 'react'
+import { ThemeProvider } from '@/lib/context/theme-context'
 import './globals.css'
 
 export default function RootLayout({
@@ -20,34 +21,36 @@ export default function RootLayout({
   }))
 
   return (
-    <html lang="en">
-      <body>
-        <QueryClientProvider client={queryClient}>
-          {children}
-          <Toaster 
-            position="top-right"
-            toastOptions={{
-              success: {
-                style: {
-                  background: '#10b981',
-                  color: '#fff',
-                  border: '1px solid #059669',
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <ThemeProvider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                success: {
+                  style: {
+                    background: '#10b981',
+                    color: '#fff',
+                    border: '1px solid #059669',
+                  },
+                  iconTheme: {
+                    primary: '#fff',
+                    secondary: '#10b981',
+                  },
                 },
-                iconTheme: {
-                  primary: '#fff',
-                  secondary: '#10b981',
+                error: {
+                  style: {
+                    background: '#ef4444',
+                    color: '#fff',
+                    border: '1px solid #dc2626',
+                  },
                 },
-              },
-              error: {
-                style: {
-                  background: '#ef4444',
-                  color: '#fff',
-                  border: '1px solid #dc2626',
-                },
-              },
-            }}
-          />
-        </QueryClientProvider>
+              }}
+            />
+          </QueryClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
