@@ -1,4 +1,8 @@
-import { CreateConcertUseCase, ReserveSeatUseCase, CancelBookingUseCase } from './index';
+import {
+  CreateConcertUseCase,
+  ReserveSeatUseCase,
+  CancelBookingUseCase,
+} from './index';
 import { Concert } from '../entities/concert.entity';
 import { Booking, BookingStatus } from '../entities/booking.entity';
 import {
@@ -100,7 +104,9 @@ describe('CreateConcertUseCase', () => {
       totalSeats: 100,
     };
 
-    await expect(useCase.execute(input)).rejects.toThrow('Concert name is required');
+    await expect(useCase.execute(input)).rejects.toThrow(
+      'Concert name is required',
+    );
   });
 
   it('should throw error when name is only whitespace', async () => {
@@ -109,7 +115,9 @@ describe('CreateConcertUseCase', () => {
       totalSeats: 100,
     };
 
-    await expect(useCase.execute(input)).rejects.toThrow('Concert name is required');
+    await expect(useCase.execute(input)).rejects.toThrow(
+      'Concert name is required',
+    );
   });
 
   it('should throw error when totalSeats is zero', async () => {
@@ -118,7 +126,9 @@ describe('CreateConcertUseCase', () => {
       totalSeats: 0,
     };
 
-    await expect(useCase.execute(input)).rejects.toThrow('Total seats must be greater than 0');
+    await expect(useCase.execute(input)).rejects.toThrow(
+      'Total seats must be greater than 0',
+    );
   });
 
   it('should throw error when totalSeats is negative', async () => {
@@ -127,7 +137,9 @@ describe('CreateConcertUseCase', () => {
       totalSeats: -10,
     };
 
-    await expect(useCase.execute(input)).rejects.toThrow('Total seats must be greater than 0');
+    await expect(useCase.execute(input)).rejects.toThrow(
+      'Total seats must be greater than 0',
+    );
   });
 
   it('should handle optional description', async () => {
@@ -246,7 +258,9 @@ describe('ReserveSeatUseCase', () => {
     expect(mockConcertRepository.findById).toHaveBeenCalledWith('concert-1');
     expect(mockConcertRepository.update).toHaveBeenCalled();
     expect(mockBookingRepository.create).toHaveBeenCalled();
-    expect(mockCache.invalidatePattern).toHaveBeenCalledWith('concert:concert-1*');
+    expect(mockCache.invalidatePattern).toHaveBeenCalledWith(
+      'concert:concert-1*',
+    );
     expect(mockCache.invalidatePattern).toHaveBeenCalledWith('concerts:*');
   });
 
@@ -297,7 +311,9 @@ describe('ReserveSeatUseCase', () => {
     );
 
     mockUnitOfWork.execute.mockImplementation(async (fn) => fn());
-    mockBookingRepository.findByConcertAndUser.mockResolvedValue(existingBooking);
+    mockBookingRepository.findByConcertAndUser.mockResolvedValue(
+      existingBooking,
+    );
 
     await expect(
       useCase.execute({
@@ -337,7 +353,9 @@ describe('ReserveSeatUseCase', () => {
     );
 
     mockUnitOfWork.execute.mockImplementation(async (fn) => fn());
-    mockBookingRepository.findByConcertAndUser.mockResolvedValue(canceledBooking);
+    mockBookingRepository.findByConcertAndUser.mockResolvedValue(
+      canceledBooking,
+    );
     mockConcertRepository.findById.mockResolvedValue(concert);
     mockConcertRepository.update.mockResolvedValue(concert.reserveSeat());
     mockBookingRepository.update.mockResolvedValue(reactivatedBooking);
@@ -436,7 +454,9 @@ describe('CancelBookingUseCase', () => {
     expect(result.status).toBe(BookingStatus.CANCELED);
     expect(mockBookingRepository.update).toHaveBeenCalled();
     expect(mockConcertRepository.update).toHaveBeenCalled();
-    expect(mockCache.invalidatePattern).toHaveBeenCalledWith('concert:concert-1*');
+    expect(mockCache.invalidatePattern).toHaveBeenCalledWith(
+      'concert:concert-1*',
+    );
     expect(mockCache.invalidatePattern).toHaveBeenCalledWith('concerts:*');
   });
 
@@ -463,7 +483,9 @@ describe('CancelBookingUseCase', () => {
     );
 
     mockUnitOfWork.execute.mockImplementation(async (fn) => fn());
-    mockBookingRepository.findByConcertAndUser.mockResolvedValue(canceledBooking);
+    mockBookingRepository.findByConcertAndUser.mockResolvedValue(
+      canceledBooking,
+    );
 
     await expect(
       useCase.execute({
@@ -495,4 +517,3 @@ describe('CancelBookingUseCase', () => {
     ).rejects.toThrow('Concert not found');
   });
 });
-

@@ -1,8 +1,17 @@
 // Application Layer: Service that orchestrates use cases
 
 import { Injectable, Inject } from '@nestjs/common';
-import { CreateConcertUseCase, ReserveSeatUseCase, CancelBookingUseCase } from '../../core/use-cases';
-import { ConcertRepository, BookingRepository, CachePort, UnitOfWork } from '../../core/ports';
+import {
+  CreateConcertUseCase,
+  ReserveSeatUseCase,
+  CancelBookingUseCase,
+} from '../../core/use-cases';
+import {
+  ConcertRepository,
+  BookingRepository,
+  CachePort,
+  UnitOfWork,
+} from '../../core/ports';
 import { Concert } from '../../core/entities/concert.entity';
 
 @Injectable()
@@ -12,8 +21,10 @@ export class ConcertService {
   private cancelBookingUseCase: CancelBookingUseCase;
 
   constructor(
-    @Inject('ConcertRepository') private readonly concertRepository: ConcertRepository,
-    @Inject('BookingRepository') private readonly bookingRepository: BookingRepository,
+    @Inject('ConcertRepository')
+    private readonly concertRepository: ConcertRepository,
+    @Inject('BookingRepository')
+    private readonly bookingRepository: BookingRepository,
     @Inject('UnitOfWork') private readonly unitOfWork: UnitOfWork,
     @Inject('CachePort') private readonly cache: CachePort,
   ) {
@@ -78,10 +89,10 @@ export class ConcertService {
   async deleteConcert(id: string): Promise<void> {
     // Cancel all bookings for this concert before deleting
     await this.bookingRepository.cancelAllByConcertId(id);
-    
+
     // Delete the concert
     await this.concertRepository.delete(id);
-    
+
     // Invalidate cache
     await this.cache.invalidatePattern(`concert:${id}*`);
     await this.cache.invalidatePattern('concerts:*');
@@ -94,13 +105,13 @@ export class ConcertService {
   async cancelReservation(concertId: string, userId: string) {
     return this.cancelBookingUseCase.execute({ concertId, userId });
   }
-
 }
 
 @Injectable()
 export class BookingService {
   constructor(
-    @Inject('BookingRepository') private readonly bookingRepository: BookingRepository,
+    @Inject('BookingRepository')
+    private readonly bookingRepository: BookingRepository,
     @Inject('CachePort') private readonly cache: CachePort,
   ) {}
 
@@ -116,4 +127,3 @@ export class BookingService {
     return this.bookingRepository.findByConcertAndUser(concertId, userId);
   }
 }
-

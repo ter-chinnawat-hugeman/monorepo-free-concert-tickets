@@ -30,7 +30,14 @@ describe('BookingController', () => {
   describe('getMyBookings', () => {
     it('should return user bookings', async () => {
       const bookings = [
-        new Booking('booking-1', 'concert-1', 'user-1', BookingStatus.RESERVED, new Date(), new Date()),
+        new Booking(
+          'booking-1',
+          'concert-1',
+          'user-1',
+          BookingStatus.RESERVED,
+          new Date(),
+          new Date(),
+        ),
       ];
 
       bookingService.getUserBookings.mockResolvedValue(bookings);
@@ -53,7 +60,14 @@ describe('BookingController', () => {
   describe('getAllBookings', () => {
     it('should return all bookings for ADMIN', async () => {
       const bookings = [
-        new Booking('booking-1', 'concert-1', 'user-1', BookingStatus.RESERVED, new Date(), new Date()),
+        new Booking(
+          'booking-1',
+          'concert-1',
+          'user-1',
+          BookingStatus.RESERVED,
+          new Date(),
+          new Date(),
+        ),
       ];
 
       bookingService.getAllBookings.mockResolvedValue(bookings);
@@ -80,4 +94,3 @@ describe('BookingController', () => {
     });
   });
 });
-

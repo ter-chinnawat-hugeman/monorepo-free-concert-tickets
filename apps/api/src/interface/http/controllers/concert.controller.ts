@@ -10,7 +10,10 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ConcertService, BookingService } from '../../../application/services/concert.service';
+import {
+  ConcertService,
+  BookingService,
+} from '../../../application/services/concert.service';
 import { CreateConcertDto, CreateConcertDtoSchema } from '../dto/concert.dto';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -27,10 +30,10 @@ export class ConcertController {
   ) {}
 
   @Get()
-  @Roles(UserRole.ADMIN, UserRole.USER) 
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async findAll(@Req() req: any) {
     const concerts = await this.concertService.getAllConcerts();
-    
+
     // For user view, include booking status
     if (req.user.role === UserRole.USER) {
       const userId = req.user.id;
@@ -55,7 +58,7 @@ export class ConcertController {
       return concertsWithBookingStatus;
     }
 
-    return concerts.map(c => ({
+    return concerts.map((c) => ({
       id: c.id,
       name: c.name,
       description: c.description,
@@ -66,7 +69,7 @@ export class ConcertController {
   }
 
   @Get(':id')
-  @Roles(UserRole.ADMIN, UserRole.USER) 
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async findOne(@Param('id') id: string) {
     const concert = await this.concertService.getConcertById(id);
     if (!concert) {
@@ -83,7 +86,7 @@ export class ConcertController {
   }
 
   @Post()
-  @Roles(UserRole.ADMIN) 
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.CREATED)
   async create(
     @Body(new ZodValidationPipe(CreateConcertDtoSchema)) dto: CreateConcertDto,
@@ -99,17 +102,20 @@ export class ConcertController {
   }
 
   @Delete(':id')
-  @Roles(UserRole.ADMIN) 
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string) {
     await this.concertService.deleteConcert(id);
   }
 
   @Post(':id/reserve')
-  @Roles(UserRole.USER) 
+  @Roles(UserRole.USER)
   @HttpCode(HttpStatus.CREATED)
   async reserve(@Param('id') concertId: string, @Req() req: any) {
-    const booking = await this.concertService.reserveSeat(concertId, req.user.id);
+    const booking = await this.concertService.reserveSeat(
+      concertId,
+      req.user.id,
+    );
     return {
       id: booking.id,
       concertId: booking.concertId,
@@ -122,7 +128,10 @@ export class ConcertController {
   @Roles(UserRole.USER)
   @HttpCode(HttpStatus.OK)
   async cancel(@Param('id') concertId: string, @Req() req: any) {
-    const booking = await this.concertService.cancelReservation(concertId, req.user.id);
+    const booking = await this.concertService.cancelReservation(
+      concertId,
+      req.user.id,
+    );
     return {
       id: booking.id,
       concertId: booking.concertId,
@@ -131,4 +140,3 @@ export class ConcertController {
     };
   }
 }
-

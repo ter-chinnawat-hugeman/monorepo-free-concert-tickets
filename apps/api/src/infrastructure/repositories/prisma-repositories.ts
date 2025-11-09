@@ -3,7 +3,11 @@ import { PrismaService } from '../database/prisma.service';
 import { Concert } from '../../core/entities/concert.entity';
 import { Booking, BookingStatus } from '../../core/entities/booking.entity';
 import { User } from '../../core/entities/user.entity';
-import { ConcertRepository, BookingRepository, UserRepository } from '../../core/ports';
+import {
+  ConcertRepository,
+  BookingRepository,
+  UserRepository,
+} from '../../core/ports';
 
 @Injectable()
 export class PrismaConcertRepository implements ConcertRepository {
@@ -11,7 +15,7 @@ export class PrismaConcertRepository implements ConcertRepository {
 
   async findById(id: string): Promise<Concert | null> {
     const data = await this.prisma.concert.findFirst({
-      where: { 
+      where: {
         id,
         deletedAt: null,
       },
@@ -228,7 +232,9 @@ export class PrismaUserRepository implements UserRepository {
     return this.toDomain(data);
   }
 
-  async create(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
+  async create(
+    user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<User> {
     const data = await this.prisma.user.create({
       data: {
         username: user.username,
@@ -268,4 +274,3 @@ export class PrismaUserRepository implements UserRepository {
     );
   }
 }
-

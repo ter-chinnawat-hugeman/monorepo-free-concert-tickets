@@ -131,7 +131,9 @@ describe('Concert Entity', () => {
         baseDate,
       );
 
-      expect(() => concert.cancelReservation()).toThrow('No reserved seats to cancel');
+      expect(() => concert.cancelReservation()).toThrow(
+        'No reserved seats to cancel',
+      );
     });
 
     it('should throw error when reserved seats is negative', () => {
@@ -145,8 +147,9 @@ describe('Concert Entity', () => {
         baseDate,
       );
 
-      expect(() => concert.cancelReservation()).toThrow('No reserved seats to cancel');
+      expect(() => concert.cancelReservation()).toThrow(
+        'No reserved seats to cancel',
+      );
     });
   });
 });
-

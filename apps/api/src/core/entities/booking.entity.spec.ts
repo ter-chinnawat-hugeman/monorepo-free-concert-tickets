@@ -38,4 +38,3 @@ describe('Booking Entity', () => {
     });
   });
 });
-

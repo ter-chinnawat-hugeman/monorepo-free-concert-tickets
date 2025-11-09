@@ -14,4 +14,3 @@ export const LoginDtoSchema = z.object({
 
 export class RegisterDto extends createZodDto(RegisterDtoSchema) {}
 export class LoginDto extends createZodDto(LoginDtoSchema) {}
-

@@ -20,10 +20,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      
+
       if (typeof exceptionResponse === 'string') {
         message = exceptionResponse;
-      } else if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+      } else if (
+        typeof exceptionResponse === 'object' &&
+        exceptionResponse !== null
+      ) {
         const responseObj = exceptionResponse as any;
         message = responseObj.message || message;
         error = responseObj.error || error;
@@ -31,7 +34,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     } else if (exception instanceof Error) {
       message = exception.message;
       error = exception.name || 'Error';
-      
+
       if (message.includes('not found')) {
         status = HttpStatus.NOT_FOUND;
       } else if (message.includes('already') || message.includes('duplicate')) {
@@ -49,4 +52,3 @@ export class HttpExceptionFilter implements ExceptionFilter {
     });
   }
 }
-

@@ -5,7 +5,10 @@ import { z } from 'zod';
 export const CreateConcertDtoSchema = z.object({
   name: z.string().min(1, 'Concert name is required'),
   description: z.string().optional(),
-  totalSeats: z.number().int().positive('Total seats must be a positive integer'),
+  totalSeats: z
+    .number()
+    .int()
+    .positive('Total seats must be a positive integer'),
 });
 
 export type CreateConcertDto = {
@@ -25,4 +28,3 @@ export const CancelReservationDtoSchema = z.object({
 });
 
 export type CancelReservationDto = z.infer<typeof CancelReservationDtoSchema>;
-

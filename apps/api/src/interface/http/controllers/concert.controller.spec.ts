@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConcertController } from './concert.controller';
-import { ConcertService, BookingService } from '../../../application/services/concert.service';
+import {
+  ConcertService,
+  BookingService,
+} from '../../../application/services/concert.service';
 import { Concert } from '../../../core/entities/concert.entity';
 import { Booking, BookingStatus } from '../../../core/entities/booking.entity';
 
@@ -43,7 +46,15 @@ describe('ConcertController', () => {
   describe('findAll', () => {
     it('should return concerts with booking status for USER role', async () => {
       const concerts = [
-        new Concert('concert-1', 'Concert 1', 'Desc', 100, 50, new Date(), new Date()),
+        new Concert(
+          'concert-1',
+          'Concert 1',
+          'Desc',
+          100,
+          50,
+          new Date(),
+          new Date(),
+        ),
       ];
 
       const booking = new Booking(
@@ -72,7 +83,15 @@ describe('ConcertController', () => {
 
     it('should return concerts without booking status for ADMIN role', async () => {
       const concerts = [
-        new Concert('concert-1', 'Concert 1', 'Desc', 100, 50, new Date(), new Date()),
+        new Concert(
+          'concert-1',
+          'Concert 1',
+          'Desc',
+          100,
+          50,
+          new Date(),
+          new Date(),
+        ),
       ];
 
       concertService.getAllConcerts.mockResolvedValue(concerts);
@@ -92,7 +111,15 @@ describe('ConcertController', () => {
 
   describe('findOne', () => {
     it('should return concert by id', async () => {
-      const concert = new Concert('concert-1', 'Concert 1', 'Desc', 100, 50, new Date(), new Date());
+      const concert = new Concert(
+        'concert-1',
+        'Concert 1',
+        'Desc',
+        100,
+        50,
+        new Date(),
+        new Date(),
+      );
 
       concertService.getConcertById.mockResolvedValue(concert);
 
@@ -110,7 +137,9 @@ describe('ConcertController', () => {
     it('should throw error when concert not found', async () => {
       concertService.getConcertById.mockResolvedValue(null);
 
-      await expect(controller.findOne('non-existent')).rejects.toThrow('Concert not found');
+      await expect(controller.findOne('non-existent')).rejects.toThrow(
+        'Concert not found',
+      );
     });
   });
 
@@ -178,7 +207,10 @@ describe('ConcertController', () => {
         userId: 'user-1',
         status: BookingStatus.RESERVED,
       });
-      expect(concertService.reserveSeat).toHaveBeenCalledWith('concert-1', 'user-1');
+      expect(concertService.reserveSeat).toHaveBeenCalledWith(
+        'concert-1',
+        'user-1',
+      );
     });
   });
 
@@ -204,8 +236,10 @@ describe('ConcertController', () => {
         userId: 'user-1',
         status: BookingStatus.CANCELED,
       });
-      expect(concertService.cancelReservation).toHaveBeenCalledWith('concert-1', 'user-1');
+      expect(concertService.cancelReservation).toHaveBeenCalledWith(
+        'concert-1',
+        'user-1',
+      );
     });
   });
 });
-

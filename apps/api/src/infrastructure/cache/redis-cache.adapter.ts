@@ -3,12 +3,14 @@ import Redis from 'ioredis';
 import { CachePort } from '../../core/ports';
 
 @Injectable()
-export class RedisCacheAdapter implements CachePort, OnModuleInit, OnModuleDestroy {
+export class RedisCacheAdapter
+  implements CachePort, OnModuleInit, OnModuleDestroy
+{
   private client: Redis;
 
   constructor() {
     const redisUrl = process.env.REDIS_URL;
-    
+
     if (redisUrl) {
       this.client = new Redis(redisUrl, {
         retryStrategy: (times) => {
@@ -81,4 +83,3 @@ export class RedisCacheAdapter implements CachePort, OnModuleInit, OnModuleDestr
     }
   }
 }
-

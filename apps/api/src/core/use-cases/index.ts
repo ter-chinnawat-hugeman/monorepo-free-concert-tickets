@@ -18,7 +18,6 @@ export class CreateConcertUseCase {
     description?: string;
     totalSeats: number;
   }): Promise<Concert> {
-
     if (!input.name || input.name.trim().length === 0) {
       throw new Error('Concert name is required');
     }
@@ -28,11 +27,11 @@ export class CreateConcertUseCase {
     }
 
     const concert = new Concert(
-      '', 
+      '',
       input.name.trim(),
       input.description?.trim() || null,
       input.totalSeats,
-      0, 
+      0,
       new Date(),
       new Date(),
       null,
@@ -66,7 +65,10 @@ export class ReserveSeatUseCase {
         input.userId,
       );
 
-      if (existingBooking && existingBooking.status === BookingStatus.RESERVED) {
+      if (
+        existingBooking &&
+        existingBooking.status === BookingStatus.RESERVED
+      ) {
         throw new Error('User already has a reservation for this concert');
       }
 
@@ -83,7 +85,10 @@ export class ReserveSeatUseCase {
       await this.concertRepository.update(updatedConcert);
 
       let booking: Booking;
-      if (existingBooking && existingBooking.status === BookingStatus.CANCELED) {
+      if (
+        existingBooking &&
+        existingBooking.status === BookingStatus.CANCELED
+      ) {
         booking = new Booking(
           existingBooking.id,
           existingBooking.concertId,
@@ -157,4 +162,3 @@ export class CancelBookingUseCase {
     });
   }
 }
-

@@ -20,4 +20,3 @@ export class User {
     return this.role === UserRole.ADMIN;
   }
 }
-

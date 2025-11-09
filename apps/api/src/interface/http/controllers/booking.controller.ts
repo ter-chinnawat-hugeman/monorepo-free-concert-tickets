@@ -11,10 +11,10 @@ export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
   @Get('me')
-  @Roles(UserRole.USER) 
+  @Roles(UserRole.USER)
   async getMyBookings(@Req() req: any) {
     const bookings = await this.bookingService.getUserBookings(req.user.id);
-    return bookings.map(b => ({
+    return bookings.map((b) => ({
       id: b.id,
       concertId: b.concertId,
       userId: b.userId,
@@ -24,10 +24,10 @@ export class BookingController {
   }
 
   @Get()
-  @Roles(UserRole.ADMIN) 
+  @Roles(UserRole.ADMIN)
   async getAllBookings(@Req() req: any) {
     const bookings = await this.bookingService.getAllBookings();
-    return bookings.map(b => ({
+    return bookings.map((b) => ({
       id: b.id,
       concertId: b.concertId,
       userId: b.userId,
@@ -36,4 +36,3 @@ export class BookingController {
     }));
   }
 }
-

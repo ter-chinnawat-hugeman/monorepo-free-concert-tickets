@@ -17,9 +17,9 @@
     "lint:api": "npm run lint --workspace=apps/api",
     "lint:web": "npm run lint --workspace=apps/web",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
     "db:migrate": "npm run prisma:migrate --workspace=apps/api",
     "db:generate": "npm run prisma:generate --workspace=apps/api",
     "db:seed": "npm run prisma:seed --workspace=apps/api"

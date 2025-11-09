@@ -6,14 +6,11 @@ import { UnitOfWork } from '../../core/ports';
 export class PrismaUnitOfWork implements UnitOfWork {
   constructor(private readonly prisma: PrismaService) {}
 
-  async begin(): Promise<void> {
-  }
+  async begin(): Promise<void> {}
 
-  async commit(): Promise<void> {
-  }
+  async commit(): Promise<void> {}
 
-  async rollback(): Promise<void> {
-  }
+  async rollback(): Promise<void> {}
 
   async execute<T>(fn: () => Promise<T>): Promise<T> {
     return this.prisma.$transaction(async (tx) => {
@@ -21,4 +18,3 @@ export class PrismaUnitOfWork implements UnitOfWork {
     });
   }
 }
-

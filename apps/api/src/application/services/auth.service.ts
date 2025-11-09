@@ -1,6 +1,11 @@
 // Application Layer: Auth Service
 
-import { Injectable, Inject, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserRepository } from '../../core/ports';
@@ -106,4 +111,3 @@ export class AuthService {
     return this.userRepository.findById(userId);
   }
 }
-

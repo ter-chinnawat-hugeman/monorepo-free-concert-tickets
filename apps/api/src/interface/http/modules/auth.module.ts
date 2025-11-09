@@ -37,7 +37,13 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service';
     },
     PrismaService,
   ],
-  exports: [AuthService, JwtModule, PassportModule, JwtStrategy, JwtAuthGuard, RolesGuard],
+  exports: [
+    AuthService,
+    JwtModule,
+    PassportModule,
+    JwtStrategy,
+    JwtAuthGuard,
+    RolesGuard,
+  ],
 })
 export class AuthModule {}
-

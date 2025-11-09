@@ -1,12 +1,11 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from '../../../application/services/auth.service';
-import { RegisterDto, LoginDto, RegisterDtoSchema, LoginDtoSchema } from '../dto/auth.dto';
+import {
+  RegisterDto,
+  LoginDto,
+  RegisterDtoSchema,
+  LoginDtoSchema,
+} from '../dto/auth.dto';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { Public } from '../guards/jwt-auth.guard';
 import { UserRole } from '../../../core/entities/user.entity';
@@ -32,4 +31,3 @@ export class AuthController {
     return this.authService.login(dto.username, dto.password);
   }
 }
-

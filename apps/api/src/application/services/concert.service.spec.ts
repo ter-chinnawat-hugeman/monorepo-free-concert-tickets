@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConcertService, BookingService } from './concert.service';
-import { ConcertRepository, BookingRepository, CachePort, UnitOfWork } from '../../core/ports';
+import {
+  ConcertRepository,
+  BookingRepository,
+  CachePort,
+  UnitOfWork,
+} from '../../core/ports';
 import { Concert } from '../../core/entities/concert.entity';
 import { Booking, BookingStatus } from '../../core/entities/booking.entity';
 
@@ -99,7 +104,15 @@ describe('ConcertService', () => {
   describe('getAllConcerts', () => {
     it('should return concerts from cache if available', async () => {
       const cachedConcerts = [
-        new Concert('concert-1', 'Concert 1', 'Desc', 100, 50, new Date(), new Date()),
+        new Concert(
+          'concert-1',
+          'Concert 1',
+          'Desc',
+          100,
+          50,
+          new Date(),
+          new Date(),
+        ),
       ];
 
       mockCache.get.mockResolvedValue(cachedConcerts);
@@ -113,7 +126,15 @@ describe('ConcertService', () => {
 
     it('should fetch from repository and cache if not in cache', async () => {
       const concerts = [
-        new Concert('concert-1', 'Concert 1', 'Desc', 100, 50, new Date(), new Date()),
+        new Concert(
+          'concert-1',
+          'Concert 1',
+          'Desc',
+          100,
+          50,
+          new Date(),
+          new Date(),
+        ),
       ];
 
       mockCache.get.mockResolvedValue(null);
@@ -166,7 +187,11 @@ describe('ConcertService', () => {
 
       expect(result).toEqual(concert);
       expect(mockConcertRepository.findById).toHaveBeenCalledWith('concert-1');
-      expect(mockCache.set).toHaveBeenCalledWith('concert:concert-1', concert, 300);
+      expect(mockCache.set).toHaveBeenCalledWith(
+        'concert:concert-1',
+        concert,
+        300,
+      );
     });
 
     it('should return null if concert not found', async () => {
@@ -187,9 +212,13 @@ describe('ConcertService', () => {
 
       await service.deleteConcert('concert-1');
 
-      expect(mockBookingRepository.cancelAllByConcertId).toHaveBeenCalledWith('concert-1');
+      expect(mockBookingRepository.cancelAllByConcertId).toHaveBeenCalledWith(
+        'concert-1',
+      );
       expect(mockConcertRepository.delete).toHaveBeenCalledWith('concert-1');
-      expect(mockCache.invalidatePattern).toHaveBeenCalledWith('concert:concert-1*');
+      expect(mockCache.invalidatePattern).toHaveBeenCalledWith(
+        'concert:concert-1*',
+      );
       expect(mockCache.invalidatePattern).toHaveBeenCalledWith('concerts:*');
     });
   });
@@ -277,7 +306,14 @@ describe('BookingService', () => {
   describe('getUserBookings', () => {
     it('should return user bookings', async () => {
       const bookings = [
-        new Booking('booking-1', 'concert-1', 'user-1', BookingStatus.RESERVED, new Date(), new Date()),
+        new Booking(
+          'booking-1',
+          'concert-1',
+          'user-1',
+          BookingStatus.RESERVED,
+          new Date(),
+          new Date(),
+        ),
       ];
 
       mockBookingRepository.findByUserId.mockResolvedValue(bookings);
@@ -292,7 +328,14 @@ describe('BookingService', () => {
   describe('getAllBookings', () => {
     it('should return all bookings', async () => {
       const bookings = [
-        new Booking('booking-1', 'concert-1', 'user-1', BookingStatus.RESERVED, new Date(), new Date()),
+        new Booking(
+          'booking-1',
+          'concert-1',
+          'user-1',
+          BookingStatus.RESERVED,
+          new Date(),
+          new Date(),
+        ),
       ];
 
       mockBookingRepository.findAll.mockResolvedValue(bookings);
@@ -317,11 +360,16 @@ describe('BookingService', () => {
 
       mockBookingRepository.findByConcertAndUser.mockResolvedValue(booking);
 
-      const result = await service.getUserBookingForConcert('concert-1', 'user-1');
+      const result = await service.getUserBookingForConcert(
+        'concert-1',
+        'user-1',
+      );
 
       expect(result).toEqual(booking);
-      expect(mockBookingRepository.findByConcertAndUser).toHaveBeenCalledWith('concert-1', 'user-1');
+      expect(mockBookingRepository.findByConcertAndUser).toHaveBeenCalledWith(
+        'concert-1',
+        'user-1',
+      );
     });
   });
 });
-

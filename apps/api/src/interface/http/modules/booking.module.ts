@@ -24,4 +24,3 @@ import { AuthModule } from './auth.module';
   exports: [BookingService],
 })
 export class BookingModule {}
-
