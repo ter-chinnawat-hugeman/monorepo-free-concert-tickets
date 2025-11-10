@@ -142,7 +142,12 @@ export class PrismaBookingRepository implements BookingRepository {
       orderBy: { createdAt: 'desc' },
     });
 
-    return data.map((item) => this.toDomain(item));
+    return data.map((item) => {
+      const booking = this.toDomain(item);
+      // Attach concert data for controller access
+      (booking as any).concert = item.concert;
+      return booking;
+    });
   }
 
   async findAll(): Promise<Booking[]> {
@@ -154,7 +159,13 @@ export class PrismaBookingRepository implements BookingRepository {
       orderBy: { createdAt: 'desc' },
     });
 
-    return data.map((item) => this.toDomain(item));
+    return data.map((item) => {
+      const booking = this.toDomain(item);
+
+      (booking as any).concert = item.concert;
+      (booking as any).user = item.user;
+      return booking;
+    });
   }
 
   async create(

@@ -14,10 +14,11 @@ export class BookingController {
   @Roles(UserRole.USER)
   async getMyBookings(@Req() req: any) {
     const bookings = await this.bookingService.getUserBookings(req.user.id);
-    return bookings.map((b) => ({
+    return bookings.map((b: any) => ({
       id: b.id,
       concertId: b.concertId,
       userId: b.userId,
+      concertName: b.concert?.name || null,
       status: b.status,
       createdAt: b.createdAt,
     }));
@@ -27,10 +28,12 @@ export class BookingController {
   @Roles(UserRole.ADMIN)
   async getAllBookings(@Req() req: any) {
     const bookings = await this.bookingService.getAllBookings();
-    return bookings.map((b) => ({
+    return bookings.map((b: any) => ({
       id: b.id,
       concertId: b.concertId,
       userId: b.userId,
+      concertName: b.concert?.name || null,
+      username: b.user?.username || null,
       status: b.status,
       createdAt: b.createdAt,
     }));

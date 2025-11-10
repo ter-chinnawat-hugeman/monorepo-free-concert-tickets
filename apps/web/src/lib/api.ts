@@ -70,6 +70,8 @@ export interface Booking {
   id: string
   concertId: string
   userId: string
+  concertName?: string | null
+  username?: string | null
   status: 'RESERVED' | 'CANCELED'
   createdAt: string
 }

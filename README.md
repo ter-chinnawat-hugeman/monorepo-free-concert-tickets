@@ -14,7 +14,7 @@ The app uses JWT authentication to keep user data safe, and it supports role-bas
 ## Tech Stack
 
 - **Backend**: NestJS (Node.js framework)
-- **Frontend**: Next.js (React framework)
+- **Frontend**: Next.js (React framework) Responsive Design focus on mobil first, tablet and wide screen
 - **Database**: PostgreSQL
 - **Cache**: Redis
 - **ORM**: Prisma

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { bookingApi, concertApi } from '@/lib/api'
+import { bookingApi } from '@/lib/api'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { format } from 'date-fns'
 import { AdminSidebar } from '@/components/Sidebar'
@@ -16,13 +16,12 @@ export default function AdminHistory() {
     queryFn: () => bookingApi.getAllBookings(),
   })
 
-  const { data: concerts } = useQuery({
-    queryKey: ['concerts'],
-    queryFn: () => concertApi.getAll(),
-  })
+  const getConcertName = (booking: any) => {
+    return booking.concertName || booking.concertId
+  }
 
-  const getConcertName = (concertId: string) => {
-    return concerts?.find((c) => c.id === concertId)?.name || concertId
+  const getUsername = (booking: any) => {
+    return booking.username || booking.userId
   }
 
   return (
@@ -80,11 +79,11 @@ export default function AdminHistory() {
                         </div>
                         <div>
                           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Username</p>
-                          <p className="text-sm text-gray-900 dark:text-gray-100 mt-1">{booking.userId}</p>
+                          <p className="text-sm text-gray-900 dark:text-gray-100 mt-1">{getUsername(booking)}</p>
                         </div>
                         <div>
                           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Concert name</p>
-                          <p className="text-sm text-gray-900 dark:text-gray-100 mt-1">{getConcertName(booking.concertId)}</p>
+                          <p className="text-sm text-gray-900 dark:text-gray-100 mt-1">{getConcertName(booking)}</p>
                         </div>
                       </div>
                     </div>
@@ -117,13 +116,21 @@ export default function AdminHistory() {
                             {format(new Date(booking.createdAt), 'dd/MM/yyyy HH:mm:ss')}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                            {booking.userId}
+                            {getUsername(booking)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                            {getConcertName(booking.concertId)}
+                            {getConcertName(booking)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                            {booking.status === 'RESERVED' ? 'Reserve' : 'Cancel'}
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                booking.status === 'RESERVED'
+                                  ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                                  : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                              }`}
+                            >
+                              {booking.status === 'RESERVED' ? 'Reserve' : 'Cancel'}
+                            </span>
                           </td>
                         </tr>
                       ))}

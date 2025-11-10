@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { bookingApi, concertApi } from '@/lib/api'
+import { bookingApi } from '@/lib/api'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { format } from 'date-fns'
 import { UserSidebar } from '@/components/Sidebar'
@@ -16,13 +16,8 @@ export default function UserHistory() {
     queryFn: () => bookingApi.getMyBookings(),
   })
 
-  const { data: concerts } = useQuery({
-    queryKey: ['concerts'],
-    queryFn: () => concertApi.getAll(),
-  })
-
-  const getConcertName = (concertId: string) => {
-    return concerts?.find((c) => c.id === concertId)?.name || concertId
+  const getConcertName = (booking: any) => {
+    return booking.concertName || booking.concertId
   }
 
   return (
@@ -76,7 +71,7 @@ export default function UserHistory() {
                         <div>
                           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Concert Name</p>
                           <p className="text-sm text-gray-900 dark:text-gray-100 mt-1 font-medium">
-                            {getConcertName(booking.concertId)}
+                            {getConcertName(booking)}
                           </p>
                         </div>
                       </div>
@@ -107,7 +102,7 @@ export default function UserHistory() {
                             {format(new Date(booking.createdAt), 'dd/MM/yyyy HH:mm:ss')}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                            {getConcertName(booking.concertId)}
+                            {getConcertName(booking)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span
