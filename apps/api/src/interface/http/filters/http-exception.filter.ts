@@ -28,8 +28,25 @@ export class HttpExceptionFilter implements ExceptionFilter {
         exceptionResponse !== null
       ) {
         const responseObj = exceptionResponse as any;
-        message = responseObj.message || message;
-        error = responseObj.error || error;
+        
+        if (responseObj.issues && Array.isArray(responseObj.issues) && responseObj.issues.length > 0) {
+          const errorMessages = responseObj.issues.map((issue: any) => {
+            const path = issue.path && issue.path.length > 0 
+              ? issue.path.join('.') 
+              : 'field';
+            const fieldName = path.charAt(0).toUpperCase() + path.slice(1);
+            return `${fieldName}: ${issue.message}`;
+          });
+          message = errorMessages.join('. ');
+          error = 'Validation Error';
+          status = HttpStatus.BAD_REQUEST;
+        } else if (status === HttpStatus.BAD_REQUEST && responseObj.message === 'Validation failed') {
+          message = 'Please check your input. Username must be at least 3 characters and password must be at least 6 characters.';
+          error = 'Validation Error';
+        } else {
+          message = responseObj.message || message;
+          error = responseObj.error || error;
+        }
       }
     } else if (exception instanceof Error) {
       message = exception.message;

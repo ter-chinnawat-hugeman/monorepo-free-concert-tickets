@@ -35,10 +35,26 @@ export default function LoginPage() {
     } catch (error: any) {
       // Extract error message from axios error response
       // NestJS returns errors in format: { statusCode, error, message, timestamp }
-      const errorMessage = error.response?.data?.message || error.message || 'Login failed. Please check your credentials and try again.'
+      let errorMessage = 'Login failed. Please check your credentials and try again.'
+      
+      if (error.response?.data) {
+        const errorData = error.response.data
+        
+        if (error.response.status === 400 && errorData.message) {
+          errorMessage = errorData.message
+        } 
+        else if (error.response.status === 401 && errorData.message) {
+          errorMessage = errorData.message
+        }
+        else if (errorData.message) {
+          errorMessage = errorData.message
+        }
+      } else if (error.message) {
+        errorMessage = error.message
+      }
       
       toast.error(errorMessage, {
-        duration: 4000,
+        duration: 5000,
         icon: '⚠️',
         style: {
           background: '#fee2e2',

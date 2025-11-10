@@ -50,10 +50,31 @@ export default function RegisterPage() {
       }
     } catch (error: any) {
       // Extract error message from axios error response
-      const errorMessage = error.response?.data?.message || error.message || 'Registration failed. Please try again.'
+      let errorMessage = 'Registration failed. Please try again.'
+      
+      if (error.response?.data) {
+        const errorData = error.response.data
+        
+        if (error.response.status === 400 && errorData.message) {
+          errorMessage = errorData.message
+        }
+        else if (error.response.status === 409 && errorData.message) {
+          errorMessage = errorData.message
+        }
+        else if (errorData.message) {
+          errorMessage = errorData.message
+        }
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      
       toast.error(errorMessage, {
-        duration: 4000,
+        duration: 5000,
         icon: '⚠️',
+        style: {
+          background: '#fee2e2',
+          color: '#991b1b',
+        },
       })
     } finally {
       setIsLoading(false)
