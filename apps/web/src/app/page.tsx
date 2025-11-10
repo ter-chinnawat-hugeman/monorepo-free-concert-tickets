@@ -1,26 +1,41 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth-store'
 
 export default function HomePage() {
   const router = useRouter()
-  const { user } = useAuthStore()
+  const { user, _hasHydrated, setHasHydrated } = useAuthStore()
+  const [mounted, setMounted] = useState(false)
+
+ 
+  useEffect(() => {
+    setMounted(true)
+    
+    if (!_hasHydrated) {
+      const timer = setTimeout(() => {
+        setHasHydrated(true)
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+  }, [_hasHydrated, setHasHydrated])
 
   useEffect(() => {
+    if (!mounted || !_hasHydrated) {
+      return
+    }
+
     if (user) {
-      // Redirect based on role
       if (user.role === 'ADMIN') {
-        router.push('/admin/home')
+        router.replace('/admin/home')
       } else {
-        router.push('/user')
+        router.replace('/user')
       }
     } else {
-      // Redirect to login if not authenticated
-      router.push('/login')
+      router.replace('/login')
     }
-  }, [user, router])
+  }, [user, router, mounted, _hasHydrated])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">

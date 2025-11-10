@@ -12,8 +12,10 @@ interface User {
 interface AuthState {
   user: User | null
   token: string | null
+  _hasHydrated: boolean
   setAuth: (user: User, token: string) => void
   clearAuth: () => void
+  setHasHydrated: (state: boolean) => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -21,6 +23,7 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       token: null,
+      _hasHydrated: false,
       setAuth: (user, token) => {
         // Store token in localStorage for API client interceptor
         if (typeof window !== 'undefined') {
@@ -34,14 +37,21 @@ export const useAuthStore = create<AuthState>()(
         }
         set({ user: null, token: null })
       },
+      setHasHydrated: (state) => {
+        set({ _hasHydrated: state })
+      },
     }),
     {
       name: 'auth-storage',
       partialize: (state) => ({ user: state.user, token: state.token }),
       onRehydrateStorage: () => (state) => {
-        // Sync token to localStorage after rehydration
+      
         if (state?.token && typeof window !== 'undefined') {
           localStorage.setItem('token', state.token)
+        }
+       
+        if (state) {
+          state.setHasHydrated(true)
         }
       },
     },
